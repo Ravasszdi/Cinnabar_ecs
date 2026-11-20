@@ -34,12 +34,13 @@ impl EcsTest {
 
     pub fn add_system(&mut self, system: SystemTest<EcsTest>) {
         self.system.system.push(system);
+        self.system.system.shrink_to_fit();
     }
 
     pub fn run(&mut self) {
         for sys in &self.system.system.clone() {
             for id in &self.id.component.clone() {
-                sys(self.to_entity(*id), &mut self)
+                sys(self.to_entity(*id), &mut self);
             }
         }
     }
@@ -80,6 +81,7 @@ macro_rules! Ecs_builder {
 
                   pub fn add_system(&mut self, system: System<$SName>){
                         self.system.system.push(system);
+                        self.system.system.shrink_to_fit();
                   }
             }
 
@@ -117,6 +119,7 @@ macro_rules! Ecs_builder {
 
                 pub fn add_system(&mut self, system: System<T>){
                       self.system.system.push(system);
+                      self.system.system.shrink_to_fit();
                 }
             }
     };
