@@ -1,73 +1,5 @@
-use crate::ecs::{
-    component::ComponentTest,
-    system::{SystemTest, SystemsTest},
-};
 pub mod component;
 pub mod system;
-/*
-pub struct EcsTest {
-    id: ComponentTest<usize>,
-    test: ComponentTest<i64>,
-    //Systems in Ecs ar for Spawners and Destroiers ONLY
-    system: SystemsTest<EcsTest>,
-}
-
-type ID = usize;
-type Index = usize;
-enum IDex {
-    ID(ID),
-    Index(Index),
-}
-
-pub struct EntityTest<'a> {
-    pub test: &'a i64,
-}
-
-impl EcsTest {
-    pub fn new() -> EcsTest {
-        EcsTest {
-            id: ComponentTest::new(),
-            test: ComponentTest::new(),
-            system: SystemsTest::new(),
-        }
-    }
-
-    pub fn to_entity<'a>(&'a self, id: usize) -> EntityTest {
-        self.test.component[id];
-        EntityTest {
-            test: &self.test.component[id],
-        }
-    }
-
-    fn spawn_entity(&mut self) -> ID {
-          todo!()
-    }
-
-    fn destroy_entity(&mut self, idex: IDex) -> Result<(), ()> {
-      let mut index:Index;
-          match idex {
-                IDex::ID(id)=>{
-                      match self.id.component.binary_search(&idex.id) {
-                            Ok(i)=> index = i,
-                            Err(_) => return Err(()),
-                      }
-                },
-                IDex::Index(i)=>{
-                      if self.id.component.len()<i {
-                            return Err(());
-                      }
-                      index = i;
-                }
-          }
-
-          self.id.component.swap_remove(index);
-          self.test.component.swap_remove(index);
-
-          Ok(())
-    }
-
-    pub fn run_tick(&mut self) {}
-*/
 
 #[macro_export]
 macro_rules! Ecs_builder {
@@ -222,28 +154,7 @@ macro_rules! Ecs_builder {
 
             /*--- Component ---*/
 
-            struct Component<T> {
-                pub component: Vec<T>,
+            Component_Builder!();
 
-                //Systems in Component are for updateing not for spawning or destroing
-                system: Systems<T>,
-            }
-
-            impl<T> Component<T> {
-                pub fn new() -> Component<T> {
-                    Component {
-                        component: Vec::new(),
-                        system: Systems::new(),
-                    }
-                }
-
-                pub fn add_mut_system(&mut self, system: MutSystem<T>){
-                      self.system.add_mut_system(system)
-                }
-
-                pub fn add_void_system(&mut self, system: VoidSystem<T>){
-                      self.system.add_void_system(system)
-                }
-            }
     }
 }
