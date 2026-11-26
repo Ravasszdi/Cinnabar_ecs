@@ -22,7 +22,7 @@ macro_rules! Ecs_builder {
                   system: Systems<$SName>,
             }
 
-            struct Entity<'a>{
+            struct RefEntity<'a>{
                   $(pub $name: &'a $type),+
             }
 
@@ -45,8 +45,8 @@ macro_rules! Ecs_builder {
                   }
 
                   #[allow(dead_code)]
-                  fn to_entity(&self, id: usize) -> Entity{
-                        Entity{
+                  fn to_ref_entity(&self, id: usize) -> RefEntity{
+                        RefEntity{
                               $($name: &self.$name.component[id]),+
                         }
                   }
