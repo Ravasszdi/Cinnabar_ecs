@@ -1,54 +1,57 @@
-use crate::ecs::{EcsTest, component};
+#[macro_export]
+macro_rules! System_Builder {
+    ($SName: ident) => {
+        type MutSystem<T> = fn(&$SName, &T) -> T;
+        type VoidSystem<T> = fn(&$SName, &T);
 
-pub type SystemTest<T> = fn(&EcsTest, &T) -> T;
-pub type VoidSystemTest<T> = fn(&EcsTest, &T);
+        enum SystemTypes<T> {
+            MutSystem(MutSystem<T>),
+            VoidSystem(VoidSystem<T>),
+        }
 
-pub enum SystemTypesTest<T> {
-    MutSystem(SystemTest<T>),
-    VoidSystem(VoidSystemTest<T>),
-}
+        struct Systems<T> {
+            pub system: Vec<SystemTypes<T>>,
+        }
 
-pub struct SystemsTest<T> {
-    pub system: Vec<SystemTypesTest<T>>,
-}
+        impl<T> Systems<T> {
+            pub fn new() -> Systems<T> {
+                Self { system: Vec::new() }
+            }
 
-impl<T> SystemsTest<T> {
-    pub fn new() -> SystemsTest<T> {
-        Self { system: Vec::new() }
-    }
+            pub fn add_mut_system(&mut self, system: MutSystem<T>) {
+                self.system.push(SystemTypes::MutSystem(system));
+                self.system.shrink_to_fit();
+            }
 
-    pub fn add_mut_system(&mut self, system: SystemTest<T>) {
-        self.system.push(SystemTypesTest::MutSystem(system));
-        self.system.shrink_to_fit();
-    }
+            pub fn add_void_system(&mut self, system: VoidSystem<T>) {
+                self.system.push(SystemTypes::VoidSystem(system));
+                self.system.shrink_to_fit();
+            }
 
-    pub fn add_void_system(&mut self, system: VoidSystemTest<T>) {
-        self.system.push(SystemTypesTest::VoidSystem(system));
-        self.system.shrink_to_fit();
-    }
+            pub fn update(&self, ecs: &$SName, components: Vec<T>) -> Vec<T> {
+                let mut components = components;
+                for sys in &self.system {
+                    match sys {
+                        SystemTypes::MutSystem(sys) => {
+                            let mut new_components = Vec::new();
+                            new_components.reserve(components.len());
 
-    pub fn update(&self, ecs: &EcsTest, components: Vec<T>) -> Vec<T> {
-        let mut components = components;
-        for sys in &self.system {
-            match sys {
-                SystemTypesTest::MutSystem(sys) => {
-                    let mut new_components = Vec::new();
-                    new_components.reserve(components.len());
+                            for component in &components {
+                                new_components.push(sys(ecs, component));
+                            }
 
-                    for component in &components {
-                        new_components.push(sys(&ecs, component));
+                            components = new_components;
+                        }
+
+                        SystemTypes::VoidSystem(sys) => {
+                            for component in &components {
+                                sys(ecs, component);
+                            }
+                        }
                     }
-
-                    components = new_components;
                 }
-
-                SystemTypesTest::VoidSystem(sys) => {
-                    for component in &components {
-                        sys(&ecs, component);
-                    }
-                }
+                components
             }
         }
-        components
-    }
+    };
 }
