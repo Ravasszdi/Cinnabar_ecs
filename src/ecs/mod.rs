@@ -9,6 +9,7 @@ macro_rules! Ecs_builder {
             type ID =  usize;
             type Index =  usize;
 
+            #[allow(dead_code)]
             enum IDex {
                 ID(ID),
                 Index(Index),
@@ -43,7 +44,8 @@ macro_rules! Ecs_builder {
                         }
                   }
 
-                  pub fn to_entity(&self, id: usize) -> Entity{
+                  #[allow(dead_code)]
+                  fn to_entity(&self, id: usize) -> Entity{
                         Entity{
                               $($name: &self.$name.component[id]),+
                         }
@@ -57,6 +59,7 @@ macro_rules! Ecs_builder {
                         self.system.add_void_system(system)
                   }
 
+                  #[allow(dead_code)]
                   fn destroy_entity(&mut self, idex: IDex) -> Result<(), ()> {
                     let index:Index;
                         match idex {
@@ -81,6 +84,7 @@ macro_rules! Ecs_builder {
                         Ok(())
                   }
 
+                  #[allow(dead_code)]
                   fn spawn_entity(&mut self, entity: OwnedEntity) -> ID {
                         unsafe{
                         let id = ID_COUNT;

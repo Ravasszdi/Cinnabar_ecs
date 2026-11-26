@@ -16,10 +16,12 @@ macro_rules! Component_Builder {
                 }
             }
 
+            #[allow(dead_code)]
             pub fn add_mut_system(&mut self, system: MutSystem<T>) {
                 self.system.add_mut_system(system)
             }
 
+            #[allow(dead_code)]
             pub fn add_void_system(&mut self, system: VoidSystem<T>) {
                 self.system.add_void_system(system)
             }

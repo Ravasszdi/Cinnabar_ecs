@@ -4,6 +4,7 @@ macro_rules! System_Builder {
         type MutSystem<T> = fn(&$SName, &T) -> T;
         type VoidSystem<T> = fn(&$SName, &T);
 
+        #[allow(dead_code)]
         enum SystemTypes<T> {
             MutSystem(MutSystem<T>),
             VoidSystem(VoidSystem<T>),
@@ -28,6 +29,7 @@ macro_rules! System_Builder {
                 self.system.shrink_to_fit();
             }
 
+            #[allow(dead_code)]
             pub fn update(&self, ecs: &$SName, components: Vec<T>) -> Vec<T> {
                 let mut components = components;
                 for sys in &self.system {
